@@ -1,0 +1,5 @@
+class StringConstants:
+	COMMA_DELIMITER = ','
+	HYPHEN_DELIMITER = '-'
+	UNDERSCORE_STRING = '_'
+	COLON_STRING = ':'

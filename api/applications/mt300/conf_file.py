@@ -1,0 +1,1 @@
+FIELDS_CONSIDERED_FOR_CLOSE_FIT = ['c_30V', 'c_36', 'c_32B', 'c_33B']
