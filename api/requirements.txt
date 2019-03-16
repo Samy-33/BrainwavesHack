@@ -1,5 +1,11 @@
+asn1crypto==0.24.0
+cffi==1.12.2
+cryptography==2.6.1
 Django==2.1.2
-djangorestframework==3.8.2
 django-rest-knox==3.1.5
+djangorestframework==3.8.2
+pycparser==2.19
+pyOpenSSL==19.0.0
+python-dateutil==2.8.0
 pytz==2018.5
-python-dateutil
+six==1.12.0
