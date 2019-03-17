@@ -1,9 +1,11 @@
 import React from 'react'
 import {NavBar as Navbar } from '../components/navbar/navbar'
 import { Footer } from '../components/footer/footer'
-import { FilterForm } from './components/filter-form'
-import { FilteredTable } from './components/filtered_data'
+import FilterForm from './components/filter-form'
+import FilteredTable from './components/filtered_data'
 import {withAuthentication} from '../hoc/with-authentication'
+import { load_filtered_data_for_queries } from './actions'
+import { connect } from 'react-redux'
 
 
 const CriteriaPresent = (props) => {
@@ -24,12 +26,19 @@ const CriteriaPresent = (props) => {
 }
 
 class Criteria extends React.Component {
+
+    componentDidMount () {
+      this.props.load_filtered_data_for_queries({})
+    }
+
     render() {
         return <CriteriaPresent {...this.props} />
     }
 }
 
-export default withAuthentication(Criteria)
+const mapPropsToDispatch = { load_filtered_data_for_queries }
+
+export default withAuthentication(connect(null, mapPropsToDispatch)(Criteria))
 
 /*
 import React from 'react'

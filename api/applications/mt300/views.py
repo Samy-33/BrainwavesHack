@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.pagination import LimitOffsetPagination
 from django.db.models import Q
+from django.http import Http404
 from applications.mt300.models import OneToOneMatches, CloseFitMatches, MessageCP, MessageSG
 from applications.mt300.serializers import OneToOneMatchSerializer, PaginationSerializer, CloseFitSerializer, MessageSGSerializer
 from applications.mt300.contants import DEFAULT_PAGINATION_SIZE, MAXIMUM_PAGINATION_SIZE
@@ -29,12 +30,12 @@ class ListMessageSGView(ListAPIView):
         fixing_date_end = request.query_params.get('fixing_date_end')
 
         buy_ccy = request.query_params.get('buy_currency')
-        buy_amount_start = request.query_params.get('buy_amt_start')
-        buy_amount_end = request.query_params.get('buy_amt_end')
+        buy_amount_start = request.query_params.get('buy_amt_from')
+        buy_amount_end = request.query_params.get('buy_amt_to')
 
         sell_ccy = request.query_params.get('sell_currency')
-        sell_amount_start = request.query_params.get('sell_amt_start')
-        sell_amount_end = request.query_params.get('sell_amt_end')
+        sell_amount_start = request.query_params.get('sell_amt_from')
+        sell_amount_end = request.query_params.get('sell_amt_to')
 
         exchange_rate_start = request.query_params.get('rate_start')
         exchange_rate_end = request.query_params.get('rate_end')
@@ -101,7 +102,8 @@ class ListMessageSGView(ListAPIView):
             except:
                 pass
         
-        if sell_ccy:
+        if sell_ccy and sell_ccy != 'Any':
+            print(sell_ccy)
             queryset = queryset.filter(c_33B_fi=sell_ccy)
 
         if sell_amount_start:
@@ -118,7 +120,7 @@ class ListMessageSGView(ListAPIView):
             except:
                 pass
         
-        if buy_ccy:
+        if buy_ccy and buy_ccy != 'Any':
             queryset = queryset.filter(c_32B_fi=buy_ccy)
 
         if buy_amount_start:
@@ -150,7 +152,34 @@ class ListOneToOneMatchView(ListAPIView):
     pagination_class = LimitOffsetPagination
 
 
+class RetrieveOneToOneMatchView(RetrieveAPIView):
+    lookup_field = 'pk'
+    queryset = OneToOneMatches.objects.all()
+    serializer_class = OneToOneMatchSerializer
+
+class RetrieveOneToOneBySGMessage(APIView):
+    def get(self, request, pk):
+        data = OneToOneMatches.objects.filter(sg_message__pk=pk)
+        if data:
+            serializer = OneToOneMatchSerializer(data.first())
+            return Response(serializer.data)
+        raise Http404
+
+
 class ListCloseFitView(ListAPIView):
     queryset = CloseFitMatches.objects.all()
     serializer_class = CloseFitSerializer
     pagination_class = LimitOffsetPagination
+
+class RetrieveCloseFitView(RetrieveAPIView):
+    lookup_field = 'pk'
+    queryset = CloseFitMatches.objects.all()
+    serializer_class = CloseFitSerializer
+
+class RetrieveCloseFitBySGMessage(APIView):
+    def get(self, request, pk):
+        data = CloseFitMatches.objects.filter(sg_message__pk=pk)
+        if data:
+            serializer = CloseFitSerializer(data.first())
+            return Response(serializer.data)
+        raise Http404

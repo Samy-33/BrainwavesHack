@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/js/dist'
 
 import { Provider } from 'react-redux'
 import store from './config/store'
